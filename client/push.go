@@ -34,5 +34,11 @@ func (c *Client) Push(ctx context.Context, image string, insecure bool) error {
 	if err != nil {
 		return err
 	}
-	return push.Push(ctx, sm, opt.ContentStore, imgObj.Target.Digest, image, insecure, opt.RegistryHosts, false)
+
+	registriesHosts := opt.RegistryHosts
+	if insecure {
+		registriesHosts = configureRegistries("http")
+	}
+
+	return push.Push(ctx, sm, opt.ContentStore, imgObj.Target.Digest, image, insecure, registriesHosts, false)
 }
